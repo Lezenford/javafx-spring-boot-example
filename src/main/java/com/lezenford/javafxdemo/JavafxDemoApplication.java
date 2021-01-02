@@ -1,62 +1,45 @@
 package com.lezenford.javafxdemo;
 
+import com.lezenford.javafxdemo.controller.DemoController;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.io.InputStream;
 
 @SpringBootApplication
 public class JavafxDemoApplication extends Application {
 
-	public static void main(String[] args) {
-		JavafxDemoApplication.launch(args);
-	}
+    public static void main(String[] args) {
+        JavafxDemoApplication.launch(args);
+    }
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		//create new container
-		VBox vBox = new VBox();
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        //Create FXML loader
+        FXMLLoader fxmlLoader = new FXMLLoader();
 
-		//set weight and height for container
-		vBox.setPrefHeight(200);
-		vBox.setPrefWidth(300);
+        //create inputStream from resource fxml file
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("fxml/demo.fxml")) {
+            //fill loader from fxml file and get root element for scene
+            Parent root = fxmlLoader.load(inputStream);
 
-		//set alignment into container
-		vBox.setAlignment(Pos.CENTER);
+            //create Scene
+            Scene scene = new Scene(root);
 
-		//create label
-		Label label = new Label("Test JavaFx app");
+            //add link to stylesheet
+            scene.getStylesheets().add("style.css");
 
-		//set style fo font size
-		label.setStyle("-fx-font-size: 24px");
+            //set scene to stage
+            primaryStage.setScene(scene);
 
-		//add label to container
-		vBox.getChildren().add(label);
+            primaryStage.show();
 
-		//create button
-		Button button = new Button("Close");
-
-		//set button weight
-		button.setPrefWidth(200);
-
-		//add button action
-		button.setOnMouseClicked(event -> Platform.exit());
-
-		//add button to container
-		vBox.getChildren().add(button);
-
-		//create Scene
-		Scene scene = new Scene(vBox);
-
-		//set scene to stage
-		primaryStage.setScene(scene);
-
-		primaryStage.show();
-	}
+            //get controller class from loader. In this case it call only as an example
+            DemoController demoController = fxmlLoader.getController();
+        }
+    }
 }
