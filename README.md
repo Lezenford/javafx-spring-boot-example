@@ -1,2 +1,3 @@
 # javafx-spring-boot-example
-Test JavaFx application with Spring Boot
+Test application for demonstration JavaFx and Spring boot integration.
+Each stage (branch) is a step for create application
