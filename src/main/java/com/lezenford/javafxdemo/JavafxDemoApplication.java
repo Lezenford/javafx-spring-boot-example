@@ -1,17 +1,12 @@
 package com.lezenford.javafxdemo;
 
 import com.lezenford.javafxdemo.controller.DemoController;
+import com.lezenford.javafxdemo.controller.FxController;
 import com.lezenford.javafxdemo.controller.MessageController;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 @SpringBootApplication
 public class JavafxDemoApplication extends Application {
@@ -32,36 +27,14 @@ public class JavafxDemoApplication extends Application {
         messageStage.initModality(Modality.APPLICATION_MODAL);
 
         //get demo controller
-        DemoController demoController = (DemoController) init(primaryStage, "fxml/demo.fxml");
+        DemoController demoController = FxController.init(primaryStage, "fxml/demo.fxml");
 
-        //get message controller. In this case only as an example
-        MessageController messageController = (MessageController) init(messageStage, "fxml/message.fxml");
+        //get message controller
+        MessageController messageController = FxController.init(messageStage, "fxml/message.fxml");
 
-        demoController.getButton().setOnMouseClicked(event -> messageStage.show());
+        //set event to button
+        demoController.getButton().setOnMouseClicked(event -> messageController.getStage().show());
 
-        primaryStage.show();
-    }
-
-    private Object init(Stage stage, String source) throws IOException {
-        //Create FXML loader
-        FXMLLoader fxmlLoader = new FXMLLoader();
-
-        //create inputStream from resource fxml file
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(source)) {
-            //fill loader from fxml file and get root element for scene
-            Parent root = fxmlLoader.load(inputStream);
-
-            //create Scene
-            Scene scene = new Scene(root);
-
-            //add link to stylesheet
-            scene.getStylesheets().add("style.css");
-
-            //set scene to stage
-            stage.setScene(scene);
-
-            //return controller
-            return fxmlLoader.getController();
-        }
+        demoController.getStage().show();
     }
 }
