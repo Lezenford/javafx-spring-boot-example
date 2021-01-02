@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import lombok.Getter;
 
 @Getter
-public class DemoController {
+public class DemoController extends FxController {
 
     @FXML
     private Button button;
