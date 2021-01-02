@@ -1,5 +1,6 @@
 package com.lezenford.javafxdemo.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,7 +17,13 @@ abstract public class FxController {
     private Stage stage;
     private Scene scene;
 
-    public static  <T extends FxController> T init(Stage stage, String source) throws IOException {
+    /**
+     * FXML loader invoke method "initialize" by reflection if it exists after read full context
+     */
+    public void initialize() {
+    }
+
+    public static <T extends FxController> T init(Stage stage, String source) {
         //Create FXML loader
         FXMLLoader fxmlLoader = new FXMLLoader();
 
@@ -42,6 +49,10 @@ abstract public class FxController {
             controller.setScene(scene);
 
             return controller;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Platform.exit();
+            return null;
         }
     }
 }
