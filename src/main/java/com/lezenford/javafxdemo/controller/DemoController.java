@@ -4,26 +4,22 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-
-import javax.annotation.PostConstruct;
+import org.springframework.stereotype.Component;
 
 @Getter
+@Component
+@RequiredArgsConstructor
 public class DemoController extends FxController implements CommandLineRunner {
-
-    @Autowired
-    private MessageController messageController;
+    private final MessageController messageController;
+    private final String source = "fxml/demo.fxml";
 
     @FXML
     private Button button;
 
-    /**
-     * FXML load is first and Spring init is second.
-     * After spring init you can configure that controller
-     */
-    @PostConstruct
-    private void init() {
+    @Override
+    public void init() {
         button.setOnMouseClicked(event -> messageController.getStage().show());
         messageController.getStage().initOwner(getStage());
         messageController.getStage().initModality(Modality.APPLICATION_MODAL);
