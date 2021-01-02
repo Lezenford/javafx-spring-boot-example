@@ -1,13 +1,16 @@
 package com.lezenford.javafxdemo;
 
 import com.lezenford.javafxdemo.controller.DemoController;
+import com.lezenford.javafxdemo.controller.MessageController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 @SpringBootApplication
@@ -19,11 +22,32 @@ public class JavafxDemoApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        //create new stage for message window
+        Stage messageStage = new Stage();
+
+        //set parent stage for massage window. It's optional step
+        messageStage.initOwner(primaryStage);
+
+        //set parent stage behavior when child stage is showing
+        messageStage.initModality(Modality.APPLICATION_MODAL);
+
+        //get demo controller
+        DemoController demoController = (DemoController) init(primaryStage, "fxml/demo.fxml");
+
+        //get message controller. In this case only as an example
+        MessageController messageController = (MessageController) init(messageStage, "fxml/message.fxml");
+
+        demoController.getButton().setOnMouseClicked(event -> messageStage.show());
+
+        primaryStage.show();
+    }
+
+    private Object init(Stage stage, String source) throws IOException {
         //Create FXML loader
         FXMLLoader fxmlLoader = new FXMLLoader();
 
         //create inputStream from resource fxml file
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("fxml/demo.fxml")) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(source)) {
             //fill loader from fxml file and get root element for scene
             Parent root = fxmlLoader.load(inputStream);
 
@@ -34,12 +58,10 @@ public class JavafxDemoApplication extends Application {
             scene.getStylesheets().add("style.css");
 
             //set scene to stage
-            primaryStage.setScene(scene);
+            stage.setScene(scene);
 
-            primaryStage.show();
-
-            //get controller class from loader. In this case it call only as an example
-            DemoController demoController = fxmlLoader.getController();
+            //return controller
+            return fxmlLoader.getController();
         }
     }
 }
